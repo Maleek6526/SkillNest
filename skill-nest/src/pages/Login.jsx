@@ -3,14 +3,15 @@ import { useNavigate } from 'react-router-dom';
 import { Eye, EyeOff } from "lucide-react";
 import Swal from "sweetalert2";
 import Mechanic from "../assets/mechanics.jpg";
-import Welther from '../assets/bricklayer.jpg' // Example image, replace with your own
+import Welther from '../assets/bricklayer.jpg' 
+import { useGoogleLogin } from '@react-oauth/google';
 
 // API Configuration - Update these URLs to match your backend
 const API_CONFIG = {
   BASE_URL: "http://localhost:8080",
   ENDPOINTS: {
-    SIGNUP: "/user/send-email-verification",
-    SIGNIN: "/user/login-user"
+    SIGNUP: "/api/skill-nest/auth/users/send-email-verification",
+    SIGNIN: "/api/skill-nest/auth/users/login-user"
   }
 };
 
@@ -155,34 +156,53 @@ const Login = () => {
     }
   };
 
-  const handleGoogleSignIn = () => {
-    Swal.fire({
-      title: 'Connecting to Google',
-      text: 'Redirecting to Google authentication...',
-      icon: 'info',
-      showConfirmButton: false,
-      timer: 2000,
-      timerProgressBar: true,
-      background: '#ffffff',
-      customClass: {
-        title: 'text-[#1A1F2C]',
-        popup: 'rounded-xl border border-gray-100 shadow-xl'
-      }
-    }).then(() => {
-      Swal.fire({
-        icon: 'info',
-        title: 'Demo Mode',
-        text: 'Google authentication would happen here in production',
-        confirmButtonText: 'Got it',
-        confirmButtonColor: '#7E69AB',
-        background: '#ffffff',
-        customClass: {
-          title: 'text-[#1A1F2C]',
-          popup: 'rounded-xl border border-gray-100 shadow-xl'
-        }
+const googleLogin = useGoogleLogin({
+  onSuccess: async (tokenResponse) => {
+    try {
+      const res = await fetch(`${API_CONFIG.BASE_URL}/api/skill-nest/auth/users/google-login`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ token: tokenResponse.access_token }),
       });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        Swal.fire({
+          icon: 'success',
+          title: 'Welcome!',
+          text: 'You have successfully signed in with Google.',
+          confirmButtonText: 'Continue',
+          confirmButtonColor: '#7E69AB',
+        }).then(() => {
+          // Save login info, redirect, etc.
+        });
+      } else {
+        throw new Error(data.message);
+      }
+    } catch (error) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: error.message || 'Something went wrong.',
+        confirmButtonText: 'Retry',
+        confirmButtonColor: '#7E69AB',
+      });
+    }
+  },
+  onError: () => {
+    Swal.fire({
+      icon: 'error',
+      title: 'Google Sign-In Failed',
+      text: 'Try again.',
+      confirmButtonText: 'OK',
+      confirmButtonColor: '#7E69AB',
     });
-  };
+  },
+});
+
 
   const handleForgotPassword = () => {
     Swal.fire({
@@ -330,7 +350,7 @@ const Login = () => {
 
             <button
               type="button"
-              onClick={handleGoogleSignIn}
+              onClick={() => googleLogin()}
               disabled={isLoading}
               className="w-full flex items-center justify-center bg-white border border-gray-300 text-gray-700 font-medium py-3 px-4 rounded-lg transition-all duration-200 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 disabled:opacity-50 disabled:cursor-not-allowed"
             >

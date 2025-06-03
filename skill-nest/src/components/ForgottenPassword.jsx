@@ -2,11 +2,15 @@ import { useState } from "react";
 import { Loader, ArrowLeft, Mail } from "lucide-react";
 import Driver from "../assets/driver.jpg"; // Example image, replace with actual path
 import Swal from 'sweetalert2';
+import { useNavigate } from "react-router-dom";
+
 
 const ForgottenPassword = () => {
   const [email, setEmail] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [emailError, setEmailError] = useState("");
+
+  const navigate = useNavigate();
 
   const validateEmail = (email) => {
     const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -18,37 +22,58 @@ const ForgottenPassword = () => {
     if (emailError) setEmailError("");
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    
-    if (!email.trim()) {
-      setEmailError("Email is required");
-      return;
+const handleSubmit = async (e) => {
+  e.preventDefault();
+
+  if (!email.trim()) {
+    setEmailError("Email is required");
+    return;
+  }
+
+  if (!validateEmail(email)) {
+    setEmailError("Please enter a valid email address");
+    return;
+  }
+
+  setIsSubmitting(true);
+
+  try {
+    const response = await fetch("http://localhost:8080/api/skill-nest/auth/users/send-reset-otp", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email }),
+    });
+
+    if (!response.ok) {
+      const data = await response.json();
+      throw new Error(data.message || "Failed to send reset link");
     }
-    
-    if (!validateEmail(email)) {
-      setEmailError("Please enter a valid email address");
-      return;
-    }
-    
-    setIsSubmitting(true);
-    
-    setTimeout(() => {
-      Swal.fire({
-        title: 'Reset Link Sent!',
-        text: `We've sent a password reset link to ${email}. Please check your inbox.`,
-        icon: 'success',
-        confirmButtonColor: '#7E69AB',
-        confirmButtonText: 'OK'
-      }).then((result) => {
-        if (result.isConfirmed) {
-          console.log("Success confirmed");
-        }
-      });
-      
-      setIsSubmitting(false);
-    }, 1500);
-  };
+
+    Swal.fire({
+      title: 'Reset Link Sent!',
+      text: `We've sent a password reset link to ${email}. Please check your inbox.`,
+      icon: 'success',
+      confirmButtonColor: '#7E69AB',
+      confirmButtonText: 'OK'
+    }).then(() => {
+        navigate('/otp-verification');
+    });
+
+  } catch (error) {
+    Swal.fire({
+      title: 'Error',
+      text: error.message,
+      icon: 'error',
+      confirmButtonColor: '#7E69AB',
+      confirmButtonText: 'Try Again'
+    });
+  } finally {
+    setIsSubmitting(false);
+  }
+};
+
 
   const handleBackToLogin = () => {
     Swal.fire({
