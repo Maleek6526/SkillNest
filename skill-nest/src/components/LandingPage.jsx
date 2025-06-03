@@ -1,6 +1,4 @@
 import React from 'react';
-import Header from './Header';
-import Hero from './Hero';
 import Features from './Features';
 import HowItWorks from './HowItWorks';
 import Testimonials from './Testimonials';
@@ -13,8 +11,6 @@ import AnotherHero from '../pages/AnotherHero.jsx'; // Importing AnotherHero for
 const LandingPage = () => {
     return (
         <>
-            {/* <Header /> */}
-            {/* <Hero /> */}
             <AnotherHero />
             <Features />
             <WorkersSection />

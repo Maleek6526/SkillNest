@@ -49,7 +49,6 @@ const AnotherHero = () => {
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-black">
-      {/* Background Images/Videos */}
       <div className="absolute inset-0">
         {heroImages.map((media, index) => (
           <div
@@ -75,13 +74,11 @@ const AnotherHero = () => {
                 playsInline
               />
             )}
-            {/* Gradient Overlay */}
-            <div className="absolute inset-0 bg-gradient-to-br from-black/60 via-black/30 to-transparent"></div>
+          <div className="absolute inset-0 bg-gradient-to-br from-black/60 via-black/30 to-transparent"></div>
           </div>
         ))}
       </div>
 
-      {/* Navigation */}
       <nav className="relative z-20 flex justify-between items-center px-4 sm:px-8 py-4 sm:py-6">
         <div
           className={`transform transition-all duration-1000 ${
@@ -139,7 +136,6 @@ const AnotherHero = () => {
         </div>
       </nav>
 
-      {/* Hero Content */}
       <div className="relative z-10 flex items-center justify-center min-h-[calc(100vh-80px)] px-4 sm:px-8 -mt-16 sm:-mt-20">
         <div className="text-center max-w-4xl mx-auto">
           <h1
@@ -189,12 +185,10 @@ const AnotherHero = () => {
         </div>
       </div>
 
-      {/* Floating Elements */}
       <div className="absolute top-1/4 left-1/4 w-2 h-2 bg-white/20 rounded-full animate-ping hidden sm:block"></div>
       <div className="absolute top-3/4 right-1/4 w-3 h-3 bg-blue-400/30 rounded-full animate-pulse hidden sm:block"></div>
       <div className="absolute bottom-1/4 left-1/3 w-1 h-1 bg-purple-400/40 rounded-full animate-bounce hidden sm:block"></div>
 
-      {/* Progress Indicators */}
       <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex space-x-3 z-20">
         {heroImages.map((_, index) => (
           <button
@@ -209,7 +203,6 @@ const AnotherHero = () => {
         ))}
       </div>
 
-      {/* Scroll Indicator */}
       <div className="absolute bottom-8 right-4 sm:right-8 flex flex-col items-center text-white/60 animate-bounce">
         <span className="text-xs sm:text-sm mb-2 rotate-90 origin-center">
           Scroll

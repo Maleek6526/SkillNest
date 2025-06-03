@@ -128,7 +128,6 @@ const Landing = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-100 via-purple-50 to-indigo-100">
-      {/* Hero Section */}
       <section className="relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-r from-purple-600/10 to-indigo-600/10"></div>
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
@@ -175,7 +174,6 @@ const Landing = () => {
         </div>
       </section>
 
-      {/* Stats Section */}
       <section className="py-16 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
@@ -196,7 +194,6 @@ const Landing = () => {
         </div>
       </section>
 
-      {/* Industries Section */}
       <section className="py-20" id="industries" data-animate>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
@@ -237,7 +234,6 @@ const Landing = () => {
         </div>
       </section>
 
-      {/* Features Section */}
       <section className="py-20 bg-white" id="features" data-animate>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
@@ -274,7 +270,6 @@ const Landing = () => {
         </div>
       </section>
 
-      {/* Testimonials Section */}
       <section className="py-20" id="testimonials" data-animate>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
@@ -322,7 +317,6 @@ const Landing = () => {
               </div>
             </div>
 
-            {/* Testimonial Navigation */}
             <div className="flex justify-center mt-8 space-x-2">
               {testimonials.map((_, index) => (
                 <button
@@ -340,7 +334,6 @@ const Landing = () => {
         </div>
       </section>
 
-      {/* CTA Section */}
       <section className="py-20 bg-gradient-to-r from-purple-600 to-indigo-600">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h3 className="text-3xl md:text-4xl font-bold text-white mb-6">

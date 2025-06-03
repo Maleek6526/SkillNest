@@ -134,7 +134,6 @@ const Dashboard = () => {
     <div className="min-h-screen bg-gradient-to-br from-purple-100 via-purple-50 to-indigo-100">
       {isVideoCallActive && <VideoCallInterface />}
       
-      {/* Mobile Sidebar Overlay */}
       {isSidebarOpen && (
         <div 
           className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"
@@ -142,7 +141,6 @@ const Dashboard = () => {
         />
       )}
 
-      {/* Sidebar */}
       <div className={`fixed left-0 top-0 h-full w-64 bg-white shadow-xl border-r border-purple-200 z-50 transform transition-transform duration-300 ease-in-out ${
         isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
       } lg:translate-x-0`}>
@@ -195,9 +193,7 @@ const Dashboard = () => {
         </div>
       </div>
 
-      {/* Main Content */}
       <div className="lg:ml-64">
-        {/* Header */}
         <header className="bg-white shadow-sm border-b border-purple-200 px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
@@ -237,9 +233,7 @@ const Dashboard = () => {
           </div>
         </header>
 
-        {/* Dashboard Content */}
         <main className="p-6">
-          {/* Stats Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 mb-8">
             {stats.map((stat, index) => (
               <div 
@@ -259,7 +253,6 @@ const Dashboard = () => {
           </div>
 
           <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
-            {/* Upcoming Interviews */}
             <div className="xl:col-span-2 bg-white rounded-xl p-6 shadow-lg border border-purple-100">
               <div className="flex items-center justify-between mb-6">
                 <h3 className="text-xl font-semibold text-gray-800">Today's Interviews</h3>
@@ -306,7 +299,6 @@ const Dashboard = () => {
               </div>
             </div>
 
-            {/* Recent Activity */}
             <div className="bg-white rounded-xl p-6 shadow-lg border border-purple-100">
               <h3 className="text-xl font-semibold text-gray-800 mb-6">Recent Activity</h3>
               <div className="space-y-4">
@@ -327,7 +319,6 @@ const Dashboard = () => {
             </div>
           </div>
 
-          {/* Quick Actions */}
           <div className="mt-8">
             <h3 className="text-xl font-semibold text-gray-800 mb-4">Quick Actions</h3>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">

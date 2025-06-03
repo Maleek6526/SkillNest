@@ -6,7 +6,6 @@ import Mechanic from "../assets/mechanics.jpg";
 import Welther from '../assets/bricklayer.jpg' 
 import { useGoogleLogin } from '@react-oauth/google';
 
-// API Configuration - Update these URLs to match your backend
 const API_CONFIG = {
   BASE_URL: "http://localhost:8080",
   ENDPOINTS: {
@@ -31,7 +30,6 @@ const Login = () => {
     setShowPassword(false);
   };
 
-  // Function to map frontend userType to backend role
   const mapUserTypeToRole = (userType) => {
     const roleMapping = {
       'talent': 'JOBSEEKER',
@@ -40,7 +38,6 @@ const Login = () => {
     return roleMapping[userType] || userType.toUpperCase();
   };
 
-  // API call function for authentication
   const makeApiCall = async (endpoint, payload) => {
     try {
       const response = await fetch(`${API_CONFIG.BASE_URL}${endpoint}`, {
@@ -70,7 +67,6 @@ const Login = () => {
     
     setIsLoading(true);
     
-    // Show loading alert
     Swal.fire({
       title: isLogin ? 'Signing in...' : 'Creating account...',
       html: 'Please wait',
@@ -85,7 +81,6 @@ const Login = () => {
       }
     });
 
-    // Prepare payload - map userType to correct backend role
     const payload = isLogin 
       ? {
           email: email.trim(),
@@ -98,18 +93,17 @@ const Login = () => {
           role: mapUserTypeToRole(userType)
         };
 
-    console.log('Sending payload:', payload); // Debug log to verify the role being sent
+    console.log('Sending payload:', payload);
 
-    // Select appropriate endpoint
+
     const endpoint = isLogin ? API_CONFIG.ENDPOINTS.SIGNIN : API_CONFIG.ENDPOINTS.SIGNUP;
-    
-    // Make API call
+
     const result = await makeApiCall(endpoint, payload);
     
     setIsLoading(false);
     
     if (result.success) {
-      // Success handling
+
       Swal.fire({
         icon: 'success',
         title: isLogin ? 'Welcome back!' : 'Account created!',
@@ -125,22 +119,16 @@ const Login = () => {
         }
       }).then(() => {
         if (isLogin) {
-          // Handle successful login - you might want to store tokens, redirect, etc.
           console.log('Login successful:', result.data);
-          // Example: localStorage.setItem('token', result.data.token);
-          // Example: window.location.href = '/dashboard';
         } else {
-          // Handle successful signup
           console.log('Signup successful:', result.data);
           navigate('/otp-verification')
-          // Maybe switch to login form
           setIsLogin(true);
           setEmail("");
           setPassword("");
         }
       });
     } else {
-      // Error handling
       Swal.fire({
         icon: 'error',
         title: 'Oops...',
@@ -177,7 +165,6 @@ const googleLogin = useGoogleLogin({
           confirmButtonText: 'Continue',
           confirmButtonColor: '#7E69AB',
         }).then(() => {
-          // Save login info, redirect, etc.
         });
       } else {
         throw new Error(data.message);
@@ -292,7 +279,6 @@ const googleLogin = useGoogleLogin({
               )}
             </div>
 
-            {/* User type selection for both login and signup */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">I am a</label>
               <div className="flex space-x-4">
