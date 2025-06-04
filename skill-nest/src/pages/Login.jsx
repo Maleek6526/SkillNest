@@ -4,7 +4,7 @@ import { Eye, EyeOff } from "lucide-react";
 import Swal from "sweetalert2";
 import Mechanic from "../assets/mechanics.jpg";
 import Welther from '../assets/bricklayer.jpg' 
-import { useGoogleLogin } from '@react-oauth/google';
+import { useGoogleLogin  } from '@react-oauth/google';
 
 const API_CONFIG = {
   BASE_URL: "http://localhost:8080",
@@ -146,15 +146,27 @@ const Login = () => {
 
 const googleLogin = useGoogleLogin({
   onSuccess: async (tokenResponse) => {
+    const accessToken = tokenResponse.access_token;
+
+    if (!accessToken) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Google Sign-In Failed',
+        text: 'No access token received.',
+      });
+      return;
+    }
+
     try {
-      const res = await fetch(`${API_CONFIG.BASE_URL}/api/skill-nest/auth/users/google-login`, {
+      const res = await fetch(`${API_CONFIG.BASE_URL}/api/skill-nest/auth/users/google`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ token: tokenResponse.access_token }),
+        body: JSON.stringify({ token: accessToken, role: mapUserTypeToRole(userType) }),
       });
-
+      console.log(mapUserTypeToRole(userType));
+      console.log(accessToken);
       const data = await res.json();
 
       if (res.ok) {
@@ -164,18 +176,15 @@ const googleLogin = useGoogleLogin({
           text: 'You have successfully signed in with Google.',
           confirmButtonText: 'Continue',
           confirmButtonColor: '#7E69AB',
-        }).then(() => {
         });
       } else {
         throw new Error(data.message);
       }
-    } catch (error) {
+    } catch (err) {
       Swal.fire({
         icon: 'error',
         title: 'Oops...',
-        text: error.message || 'Something went wrong.',
-        confirmButtonText: 'Retry',
-        confirmButtonColor: '#7E69AB',
+        text: err.message || 'Something went wrong.',
       });
     }
   },
@@ -184,11 +193,10 @@ const googleLogin = useGoogleLogin({
       icon: 'error',
       title: 'Google Sign-In Failed',
       text: 'Try again.',
-      confirmButtonText: 'OK',
-      confirmButtonColor: '#7E69AB',
     });
   },
 });
+
 
 
   const handleForgotPassword = () => {
@@ -318,6 +326,11 @@ const googleLogin = useGoogleLogin({
                   />
                   <span>Employer</span>
                 </label>
+                  {!userType && (
+                    <p className="text-red-500 text-sm mt-1">
+                        Please select a role before continuing with Google.
+                    </p>
+                  )}  
               </div>
             </div>
 
@@ -336,8 +349,8 @@ const googleLogin = useGoogleLogin({
 
             <button
               type="button"
-              onClick={() => googleLogin()}
-              disabled={isLoading}
+              onClick={() => googleLogin ()}
+              disabled={isLoading || !userType}
               className="w-full flex items-center justify-center bg-white border border-gray-300 text-gray-700 font-medium py-3 px-4 rounded-lg transition-all duration-200 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 disabled:opacity-50 disabled:cursor-not-allowed"
             >
             <svg className="h-5 w-5 mr-2" viewBox="0 0 24 24">
