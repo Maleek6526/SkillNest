@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Loader, Eye, EyeOff, ArrowLeft } from "lucide-react";
-import Swal from 'sweetalert2';
+import Swal from "sweetalert2";
 import Mechanic from "../assets/mechanics.jpg"; // Example image, replace with actual path
 import { useNavigate } from "react-router-dom";
 
@@ -59,7 +59,9 @@ const OtpVerification = () => {
     if (digits.length === 6) {
       const newOtp = digits.split("").slice(0, 6);
       setOtp(newOtp);
-      const nextInput = document.getElementById(`otp-${newOtp.findIndex(d => d === "")}`);
+      const nextInput = document.getElementById(
+        `otp-${newOtp.findIndex((d) => d === "")}`
+      );
       if (nextInput) nextInput.focus();
     }
   };
@@ -70,45 +72,91 @@ const OtpVerification = () => {
       setOtp(["", "", "", "", "", ""]);
       setTimeLeft(120);
       Swal.fire({
-        title: 'Success!',
-        text: 'OTP resent successfully. Please check your email.',
-        icon: 'success',
-        confirmButtonColor: '#7E69AB',
-        confirmButtonText: 'OK'
+        title: "Success!",
+        text: "OTP resent successfully. Please check your email.",
+        icon: "success",
+        confirmButtonColor: "#7E69AB",
+        confirmButtonText: "OK",
       });
       setIsResending(false);
     }, 1500);
   };
 
-  const handleVerify = () => {
-    setIsSubmitting(true);
-    setTimeout(() => {
+  const handleVerify = async () => {
+    const enteredOtp = otp.join("");
+    const userEmail = localStorage.getItem("userEmail");
+    const userRole = localStorage.getItem("userRole");
+
+    if (!userEmail || !userRole) {
       Swal.fire({
-        title: 'Verified!',
-        text: 'OTP verified successfully!',
-        icon: 'success',
-        confirmButtonColor: '#7E69AB',
-        confirmButtonText: 'Continue'
-      }).then((result) => {
-        if (result.isConfirmed) {
-        }
+        icon: "error",
+        title: "Missing Info",
+        text: "User email or role is not found in local storage.",
       });
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    try {
+      const response = await fetch(
+        "http://localhost:8080/api/skill-nest/auth/users/create-user",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            email: userEmail,
+            otp: enteredOtp,
+            role: userRole,
+          }),
+        }
+      );
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        Swal.fire({
+          icon: "error",
+          title: "Verification Failed",
+          text: data.message || "Something went wrong during verification.",
+        });
+      } else {
+        Swal.fire({
+          icon: "success",
+          title: "Verified!",
+          text: "OTP verified successfully!",
+          confirmButtonColor: "#7E69AB",
+          confirmButtonText: "Continue",
+        }).then(() => {
+          localStorage.setItem("userData", JSON.stringify(data));
+          navigate("/dashboard");
+        });
+      }
+    } catch (error) {
+      Swal.fire({
+        icon: "error",
+        title: "Network Error",
+        text: error.message || "Unable to connect to the server.",
+      });
+    } finally {
       setIsSubmitting(false);
-    }, 1500);
+    }
   };
 
   const handleBackToLogin = () => {
     Swal.fire({
-      title: 'Going back',
-      text: 'Are you sure you want to go back to the login page?',
-      icon: 'question',
-      confirmButtonColor: '#7E69AB',
+      title: "Going back",
+      text: "Are you sure you want to go back to the login page?",
+      icon: "question",
+      confirmButtonColor: "#7E69AB",
       showCancelButton: true,
-      cancelButtonText: 'Stay here',
-      confirmButtonText: 'Go back'
+      cancelButtonText: "Stay here",
+      confirmButtonText: "Go back",
     }).then((result) => {
       if (result.isConfirmed) {
-        navigate('/login');
+        navigate("/login");
       }
     });
   };
@@ -121,9 +169,7 @@ const OtpVerification = () => {
             <h1 className="text-4xl font-bold text-[#1A1F2C] mb-2">
               <span className="text-[#7E69AB]">Skill</span>Nest
             </h1>
-            <p className="text-gray-600">
-              Verify your account
-            </p>
+            <p className="text-gray-600">Verify your account</p>
           </div>
 
           <div className="space-y-6">
@@ -131,7 +177,9 @@ const OtpVerification = () => {
               <p className="text-sm sm:text-base text-gray-600">
                 We've sent a 6-digit verification code to
               </p>
-              <p className="text-sm sm:text-base font-medium text-[#1A1F2C]">{email}</p>
+              <p className="text-sm sm:text-base font-medium text-[#1A1F2C]">
+                {email}
+              </p>
             </div>
 
             <div className="flex justify-center gap-2" onPaste={handlePaste}>
@@ -179,7 +227,8 @@ const OtpVerification = () => {
                 >
                   {isResending ? (
                     <span className="inline-flex items-center">
-                      <Loader className="animate-spin h-4 w-4 mr-1" /> Resending...
+                      <Loader className="animate-spin h-4 w-4 mr-1" />{" "}
+                      Resending...
                     </span>
                   ) : (
                     "Resend Code"
@@ -202,13 +251,19 @@ const OtpVerification = () => {
       <div className="hidden sm:flex w-full md:w-1/2 bg-[#E5DEFF] items-center justify-center p-8 min-h-[30vh] md:min-h-screen transition-all duration-500 ease-in-out">
         <div className="max-w-lg p-4 animate-fade-in">
           <div className="text-center md:text-left">
-            <h2 className="text-3xl font-bold text-[#1A1F2C] mb-4">Verify Your <span className="text-[#7E69AB]">SkillNest</span> Account</h2>
-            <p className="text-gray-600 mb-6">Enter the verification code sent to your email to complete your registration.</p>
+            <h2 className="text-3xl font-bold text-[#1A1F2C] mb-4">
+              Verify Your <span className="text-[#7E69AB]">SkillNest</span>{" "}
+              Account
+            </h2>
+            <p className="text-gray-600 mb-6">
+              Enter the verification code sent to your email to complete your
+              registration.
+            </p>
             <div className="relative h-64 md:h-80 overflow-hidden rounded-xl shadow-xl">
-              <img 
+              <img
                 src={Mechanic}
-                alt="Verification" 
-                className="w-full h-full object-cover transform hover:scale-105 transition-all duration-500 ease-in-out" 
+                alt="Verification"
+                className="w-full h-full object-cover transform hover:scale-105 transition-all duration-500 ease-in-out"
               />
             </div>
           </div>

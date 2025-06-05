@@ -37,43 +37,45 @@ const handleSubmit = async (e) => {
 
   setIsSubmitting(true);
 
-  try {
-    const response = await fetch("http://localhost:8080/api/skill-nest/auth/users/send-reset-otp", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ email }),
-    });
+try {
+  const response = await fetch("http://localhost:8080/api/skill-nest/auth/users/send-reset-otp", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ email }),
+  });
 
-    if (!response.ok) {
-      const data = await response.json();
-      throw new Error(data.message || "Failed to send reset link");
-    }
-
-    Swal.fire({
-      title: 'Reset Link Sent!',
-      text: `We've sent a password reset link to ${email}. Please check your inbox.`,
-      icon: 'success',
-      confirmButtonColor: '#7E69AB',
-      confirmButtonText: 'OK'
-    }).then(() => {
-        navigate('/otp-verification');
-    });
-
-  } catch (error) {
-    Swal.fire({
-      title: 'Error',
-      text: error.message,
-      icon: 'error',
-      confirmButtonColor: '#7E69AB',
-      confirmButtonText: 'Try Again'
-    });
-  } finally {
-    setIsSubmitting(false);
+  if (!response.ok) {
+    const data = await response.json();
+    throw new Error(data.message || "Failed to send reset link");
   }
-};
 
+  const data = await response.json();
+
+  Swal.fire({
+    title: 'Reset Link Sent!',
+    text: `We've sent a password reset link to ${email}. Please check your inbox.`,
+    icon: 'success',
+    confirmButtonColor: '#7E69AB',
+    confirmButtonText: 'OK'
+  }).then(() => {
+      localStorage.setItem("userEmail", email);
+      navigate('/password-reset');
+  });
+
+} catch (error) {
+  Swal.fire({
+    title: 'Error',
+    text: error.message,
+    icon: 'error',
+    confirmButtonColor: '#7E69AB',
+    confirmButtonText: 'Try Again'
+  });
+} finally {
+  setIsSubmitting(false);
+}
+};
 
   const handleBackToLogin = () => {
     Swal.fire({

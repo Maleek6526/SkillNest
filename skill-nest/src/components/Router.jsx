@@ -10,6 +10,7 @@ import AnotherHero from '../pages/AnotherHero.jsx';
 import Landing from '../pages/Landing.jsx';
 import AboutSection from '../components/AboutSection.jsx'
 import Footer from '../components/Footer.jsx'
+import PasswordReset from '../pages/PasswordReset.jsx';
 const Router = () => {
     return (
         <BrowserRouter>
@@ -19,6 +20,7 @@ const Router = () => {
                 <Route path="/about" element={<Landing />} />
                 <Route path="/services" element={<AboutSection />} />
                 <Route path="/login" element={<Login/>}/>
+                <Route path="/password-reset" element={<PasswordReset/>}/>
                 <Route path="/otp-verification" element={<OtpVerification/>}/>
                 <Route path="/forgotten-password" element={<ForgottenPassword />} />
                 <Route path="/another-hero-page" element={<AnotherHero />} />
